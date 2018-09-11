@@ -1,0 +1,279 @@
+Tabindex
+------------------
+Tabindex can be applied to any HTML element and it takes a range of numeric values
+
+<div tabindex="0">Focus me!</div>
+
+tabindex = "-1"
+
+    Not in the natural tab order
+    Can be programmatically focused with focus() method
+    Useful for offscreen content which appears on screen in response to a user event
+
+    document.querySelector('#modal').focus();
+
+tabindex = "0"
+
+    In the natural tab order
+    Can be programmatically focused
+
+    A tabindex of 0 will add the element to the natural tab order
+
+    <div>Focus me!</div> <-- doesn't ever get focus
+    <div tabindex="0">Focus me!</div> <-- It gets focus when we tab to it
+
+tabindex = "5"
+
+    In the natural tab order
+    Jumped to front of tab order
+    Anti pattern!!! Can be confusing for screen reader users
+    It's better to move the elements in the DOM
+
+
+
+On single page applications it's useful to put a negative tabindex on section headers so when we scroll to them using the menu, we can give them focus programmatically and we don't have to keep moving through menu tabs.
+
+
+Skipping links
+---------------------
+Useful so we don't have to tab through every navigation link and skip to the main content.
+
+We put a button before the navigation that appears on the first tab press that allows us to skip the links
+
+<a href="#maincontent" class="skip-link">Skip to main content</a>
+<nav>
+...
+</nav>
+<main id="maincontent" tabindex="-1">
+...
+</main>
+
+On new browsers, just clicking on the link to an anchor element will change focus but for older browesrs we have to implement it with a negative tabindex.
+
+.skip-link{
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #bf1722;
+    color: white;
+    padding: 8px;
+    z-index: 100;
+}
+
+The link is positioned offscreen until it gains focus.
+
+.skip-link:focus{
+    top: 0;
+}
+
+
+http://webaim.org/techniques/skipnav/
+
+
+
+
+Keyboard design patterns
+-----------------------------
+
+Implementing keyboard focus on personalized elements or widgets.
+Look into ARIA specs and then use ROVING FOCUS technique.
+
+
+
+
+Offscreen content
+-----------------------------
+
+We can lose sight of the focused element if it is on a responsive menu drawer, for example.
+
+Using document.activeElement on the console will tell us which element has focus.
+
+Use Chrome accesibility tools extension! -> Audits
+
+If we use display:none or visibility:hidden we prevent focus from being able to move into that element and focusing any of the child links inside of it and then we can set it back to display:block or visibility:visible
+
+
+
+
+Modals and keyboard traps
+-----------------------------
+
+Watch video for code implementation
+
+
+
+
+
+
+ASSISTIVE TECHNOLOGY
+
+Semantic HTML: The name game
+--------------------------------------------
+We have visible labels in some elements and text alternative for images and elements without text.
+
+Checklist 1.1.1 Non-text content
+* All images, form image buttons, and image map hot spots have appropriate, equivalent alternative text.
+
+* Images that do not convey content, are decorative, or contain content that is already conveyed in text are given null alt text (alt="") or implemented as CSS backgrounds. All linked images have descriptive alternative text.
+
+* Form buttons have a descriptive value.
+    <button>Search</button>
+    "Search, button"
+    The word search works as the button's text alternative
+
+* Form inputs have associated text labels.
+    <label>
+        <input type="checkbox" checked name="jLetter">
+        Receive promotional offers?
+    </label>
+    "Receive promotional offers, checked, checkbox"
+
+    <input type="checkbox" checked name="jLetter" id="letter">
+    <label for="letter">Receive promotional offers?</label>
+    "Receive promotional offers, checked, checkbox"
+
+    The label now also works for checking the input.
+
+
+
+Text Alternatives
+---------------------------------
+We can use the old attruibute to provide a text alternative for images
+
+<img src="bees.jpg" alt="Bees swarming">
+
+It allows to display a simple string of text whenever the image is not available, the image fails to load or you're a web crawling bot or a screen reader.
+
+Alt differs from any other type of caption, including a title in that it will only be used if the image is not available.
+
+Caption and title typically provide extra context for the image rather than an alternative to the image.
+
+The text needs to convey the same thing as the image in the given context.
+
+If the image is not relevant to the content, for example a magnifying glass next to a search box with the text "search", we can use an empty alt text so screen readers skip that element and don't give us the file name. 
+
+
+
+NAVIGATING CONTENT
+---------------------------------
+2.4.10 Section headings
+Beyond providing an overall document structure, individual sections of content are designated using headings, where appropiate.
+
+JavaScript headings snippet:
+
+for (var i = 0, headings = $$('h1,h2,h3,h4,h5,h6');
+     i < headings.length; i++) {
+   console.log(headings[i].textContent.trim() + " " +  
+               headings[i].tagName,
+               headings[i]);
+}
+
+
+WebAIM's article on accesskey: http://webaim.org/techniques/keyboard/accesskey
+
+
+Link text
+----------------------------------
+<a href="#internal">Now I'm a link</a>
+* Shows up in the link list
+* Works with the keyboard
+* Can be bookmarked
+
+If we use an image as a link, use alt text to make sure the link is exposed to the assistive technology layout.
+<a href="#internal">
+    <img alt="Udacity" src="logo.svg">
+</a>
+
+We have to make sure that links make it to the link list but also that it's useful, making its text as descriptive as possible.
+
+2.4.9 - The purpose of each link (or form button or image map hotspot) can be determined from the text link alone.
+
+Avoid using links as LEARN MORE, and use for example LEARN MORE ABOUT BASEBALL or make the header of the paragraph itself the link.
+
+
+
+Landmarks
+------------------------------------
+main: Main content of a web page.
+header: Banner or introductory content at the start of any type of section.
+footer: It can be a page footer and contain information about the page or site or a footer to a particular section of a page with extra information about that section.
+nav: Represents a section of a page that links to other pages like the top nav bar or to parts within the page like a table of contents.
+section: Completely generic section of a document or application, use with a header.
+article: Self contained sections of content like a blog entry, news article or forum post. It should make sense in another context.
+aside: Represents any content that is tangentially related to the content around it. Extra navigation or information about the page.
+
+
+BULIT IN HTML ACCESIBILITY 
+------------------------------------
+DOM ORDER 
+FOCUS 
+KEYBOARD
+SEMANTICS
+LABELING
+HEADINGS
+LANDMARKS
+LINKS
+
+
+
+ARIA
+------------------------------------
+Web Accessibility Initiative
+
+Accessible
+Rich
+Internet
+Applications
+
+Aria works by allowing you to specify attributes on elements which modify the way that element is translated into the accessibility tree.
+
+<!-- custom checkbox -->
+<div role="checkbox" aria-checked="false">Receive promotional offers</div> 
+
+We should also modify the element appearance, behavior, add focusability and add keyboard events handling.
+
+https://www.w3.org/TR/wai-aria-1.1/
+
+
+Add semantics to elements that have none.
+Modify existing elements semantics within certain bounds.
+Add extra labels and descriptions
+Express semantic relationships
+Live updates -> alerts
+
+ROLEPLAYING
+https://www.w3.org/TR/wai-aria-1.0/#roles
+
+* aria-label
+Allows us to specify a string directly to be used as the accessible label. For example if you have some kind of visual indication as to the purpose of an element (hamburger menu) but still need to clarify that to anyone who might not be able to access that visual indication.
+
+<button aria-label="menu" class="hamburger"></button>
+button -> name:"Menu"
+
+<button aria-label="Close">x</button>
+button -> name:"Close"
+
+
+* aria-labelledby
+Allows us to specify an element ID to refer to another element in the DOM as this element's label. 
+
+<span id="rg-label">
+Drink options
+</span>
+<div role="radiogroup" aria-labelledby"rg-label">
+    ...
++</div>
+radiogroup -> name:"Drink options"
+
+It can take a list of ID refs to compose a label out of multiple elements. The label will be concatenated in the order the ID refs are given.
+
+<div id="men-lbl">
+    Men's T-shirts
+</div>
+<button id="men-btn" aria-labelledby="menlbl men-btn">
+    Shop now
+</button>
+button -> name:"Men's T-Shirts Shop Now"
+
+
+* aria-describedby
