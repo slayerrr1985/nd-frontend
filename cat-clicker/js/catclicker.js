@@ -27,7 +27,7 @@ function createCatGallery(list){
             htmlCode = `<div>
             <p>This is ${list.cats[thisCatId].name}</p>
             <img id="cat-image" src="img/${list.cats[thisCatId].imageName}">
-            <p>Click counter: <span id="click-counter">${list.cats[thisCatId].counter}</span></p>
+            <p>You've clicked on ${list.cats[thisCatId].name} <span id="click-counter">${list.cats[thisCatId].counter}</span> time(s).</p>
             </div>`;
             document.getElementById("cat-box").innerHTML = htmlCode;
 
@@ -36,7 +36,7 @@ function createCatGallery(list){
                 list.cats[thisCatId].counter++;
                 document.getElementById('click-counter').innerHTML = list.cats[thisCatId].counter;
             }, false);
-            
+
         }, false);
     };
 };
